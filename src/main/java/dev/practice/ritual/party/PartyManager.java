@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,11 +99,12 @@ public final class PartyManager implements Listener {
 
     public void chat(Player from, String message) {
         Party p = byPlayer.get(from.getUniqueId());
+        String legacy = "§9Party §8> §b" + from.getName() + "§f: " + message;
         if (p == null) {
-            from.sendMessage("§cYou are not in a party. §e/p <player>");
+            from.sendMessage("§cYou are not in a party, but sending the message anyway to be able to use SBO commands solo. Use the command to party others if needed: §e/p <player>");
+            from.sendMessage(legacy);
             return;
         }
-        String legacy = "§9Party §8> §b" + from.getName() + "§f: " + message;
         for (UUID id : p.members) {
             Player m = Bukkit.getPlayer(id);
             if (m != null && m.isOnline()) m.sendMessage(legacy);
@@ -122,6 +124,10 @@ public final class PartyManager implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     public void onChat(AsyncChatEvent event) {
+        // Match the requested Hypixel-style player prefix for every public message.
+        event.renderer((source, displayName, message, viewer) ->
+                LegacyComponentSerializer.legacySection().deserialize("§7" + source.getName() + "§7: ")
+                        .append(message));
         String raw = PlainTextComponentSerializer.plainText().serialize(event.message());
         if (raw == null) return;
         String body = stripPc(raw);

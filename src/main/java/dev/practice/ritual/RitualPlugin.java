@@ -83,7 +83,7 @@ public final class RitualPlugin extends JavaPlugin implements Listener {
         bindStat("setdamage", SetStatCommand.Kind.DAMAGE);
 
         MiscCommands misc = new MiscCommands(this);
-        for (String c : new String[]{"p", "party", "pc", "trades", "togglebreak",
+        for (String c : new String[]{"p", "party", "pc", "ac", "trades", "togglebreak",
                 "togglefakelag", "togglechance", "compactor", "purse", "items", "anvil"}) {
             bind(c, misc, misc);
         }
@@ -121,7 +121,7 @@ public final class RitualPlugin extends JavaPlugin implements Listener {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-        getLogger().info("RitualPractice 2.2.0 enabled.");
+        getLogger().info("RitualPractice 2.3.0 enabled.");
     }
 
     private void bind(String name, CommandExecutor exec, TabCompleter tab) {

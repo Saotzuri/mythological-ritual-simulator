@@ -1,5 +1,7 @@
 package dev.practice.ritual.mob;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import dev.practice.ritual.RitualPlugin;
 import dev.practice.ritual.ritual.Burrow;
 import dev.practice.ritual.ritual.GriffinRarity;
@@ -9,12 +11,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.ArmorStand;
@@ -225,25 +229,32 @@ public final class MobFactory {
         if (kind == MythoKind.HUNTER) {
             ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
             LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
-            chestplateMeta.setColor(Color.RED);
+            chestplateMeta.setColor(Color.fromRGB(0xff0a0a));
             chestplateMeta.addEnchant(Enchantment.PROTECTION, 1, true);
             chestplate.setItemMeta(chestplateMeta);
 
             ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
             LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
-            leggingsMeta.setColor(Color.RED);
+            leggingsMeta.setColor(Color.fromRGB(0xff0a0a));
             leggingsMeta.addEnchant(Enchantment.PROTECTION, 1, true);
             leggings.setItemMeta(leggingsMeta);
 
             ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
             LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
-            bootsMeta.setColor(Color.GRAY);
+            bootsMeta.setColor(Color.fromRGB(0x304b4e));
             bootsMeta.addEnchant(Enchantment.PROTECTION, 1, true);
             boots.setItemMeta(bootsMeta);
 
             entity.getEquipment().setChestplate(chestplate);
             entity.getEquipment().setLeggings(leggings);
             entity.getEquipment().setBoots(boots);
+            ItemStack helmet = new ItemStack(Material.PLAYER_HEAD);
+            SkullMeta helmetMeta = (SkullMeta) helmet.getItemMeta();
+            PlayerProfile profile = Bukkit.createProfile(UUID.fromString("7b125998-b7e8-3516-bb12-5998b7e8f516"));
+            profile.setProperty(new ProfileProperty("textures", "e3RleHR1cmVzOntTS0lOOnt1cmw6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIwZmM5NDIyMjIzODdhYjkwOTg4NjE3OTI4MTU1MDRjMGYwMjNkOWU1ZmYwZTJmZDk0YmVmYjIxNWZlZjNjYyJ9fX0"));
+            helmetMeta.setPlayerProfile(profile);
+            helmet.setItemMeta(helmetMeta);
+            entity.getEquipment().setHelmet(helmet);
             entity.getEquipment().setItemInMainHand(new ItemStack(Material.WOODEN_SWORD));
         }
         if (kind == MythoKind.KING) {

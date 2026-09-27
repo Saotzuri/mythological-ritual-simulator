@@ -359,7 +359,10 @@ public final class ItemFactory {
     }
 
     public static ItemStack dropItem(SellPrices.Entry e, int amount) {
-        ItemStack item = new ItemStack(e.material(), Math.max(1, amount));
+        ItemStack item = e.itemStack() == null
+                ? new ItemStack(e.material(), Math.max(1, amount))
+                : e.itemStack().clone();
+        item.setAmount(Math.max(1, amount));
         item.editMeta(meta -> {
             applyHypixelDrop(meta, e.id());
             meta.setUnbreakable(false);

@@ -33,7 +33,7 @@ public final class TradesGui implements Listener {
         int slot = 0;
         for (SellPrices.Entry e : SellPrices.all().values()) {
             if (slot >= 54) break;
-            ItemStack icon = new ItemStack(e.material());
+            ItemStack icon = e.itemStack() == null ? new ItemStack(e.material()) : e.itemStack().clone();
             icon.editMeta(meta -> {
                 meta.displayName(Component.text(e.display(), NamedTextColor.YELLOW)
                         .decoration(TextDecoration.ITALIC, false));
