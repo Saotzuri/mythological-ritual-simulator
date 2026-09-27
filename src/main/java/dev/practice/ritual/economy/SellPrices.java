@@ -1,13 +1,18 @@
 package dev.practice.ritual.economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public final class SellPrices {
-    public record Entry(String id, String display, Material material, long price) {}
+    public record Entry(String id, String display, Material material, ItemStack itemStack, long price) {}
 
     private static final Map<String, Entry> BY_ID = new LinkedHashMap<>();
 
@@ -17,18 +22,20 @@ public final class SellPrices {
         add("CHIMERA", "Enchanted Book (Chimera 1)", Material.ENCHANTED_BOOK, 30_000_000);
         add("MANTICORE", "Manti-core", Material.BLAZE_ROD, 30_000_000);
         add("STINGER", "Fateful Stinger", Material.ARROW, 5_000_000);
-        add("CRETAN_URN", "Cretan Urn", Material.DECORATED_POT, 250_000);
-        add("SHELMET", "Dwarf Turtle Shelmet", Material.TURTLE_HELMET, 250_000);
-        add("PLUSHIE", "Crochet Tiger Plushie", Material.TOTEM_OF_UNDYING, 250_000);
+        add("CRETAN_URN", "Cretan Urn", skull("895df42056d79602a6915fec6ef804bbe57b450a0a484ce9997403d0c904d356"), 250_000);
+        add("SHELMET", "Dwarf Turtle Shelmet", skull("bac1510610d50443fd97f34a6e94e21d0b93d5c7529f3d95c1816ce24a13dc84"), 250_000);
+        add("PLUSHIE", "Crochet Tiger Plushie", skull("f66fb4d9e6ae0c5e61ec6b9131e015fb89792852e195e96864662ba422ef26e2"), 250_000);
         add("REMEDIES", "Antique Remedies", Material.AZURE_BLUET, 250_000);
-        add("MYTHOS_FRAGMENT", "Mythos Fragment", Material.PRISMARINE_SHARD, 25_000);
+        add("MYTHOS_FRAGMENT", "Mythos Fragment", skull("7c5e2923b44d7c8fe725735c3415d40cfc95b8d70df115f5633551ecb1ae65e4"), 25_000);
         add("HILT", "Hilt of Revelations", Material.STICK, 150_000);
         add("SHIMMERING_WOOL", "Shimmering Wool", Material.YELLOW_WOOL, 50_000_000);
         add("CROWN", "Crown of Greed", Material.GOLDEN_HELMET, 1_000_000);
         add("DAEDALUS_STICK", "Daedalus Stick", Material.STICK, 2_500_000);
-        add("MINOS_RELIC", "Minos Relic", Material.PRISMARINE_CRYSTALS, 30_000_000);
-        add("BRAIN_FOOD", "Brain Food", Material.GOLDEN_APPLE, 2_000_000);
-        add("SOUVENIR", "Washed-up Souvenir", Material.NAUTILUS_SHELL, 250_000);
+        add("MINOS_RELIC", "Minos Relic", skull("40b4648cbd817c7b5fc654c9c054e360d81bbfe1a00f214657a174e3e0d07d21"), 30_000_000);
+        add("BRAIN_FOOD", "Brain Food", skull("867e27a256cdb7b741dbfe8419f5f3d89bdfbd52a1b3f0fdb9c95edeeafc1f3f"), 2_000_000);
+        add("SOUVENIR", "Washed-up Souvenir", skull("3777f04644dec5f80bfeaa7401acfbbc150eb25d3ff8be4220e7c34426cd727c"), 250_000);
+        add("MANTICORE", "Manti-core", skull("d4f1eb29bf8314703394c624c5832e0dfbce8fa6c25870205d67d96ed743bf90"), 30_000_000);
+        add("STINGER", "Fateful Stinger", skull("4e2c26ad88fdd10381284650770d9b59d3688a52868b3bcc7762f88a34303de8"), 5_000_000);
         add("ANCIENT_CLAW", "Ancient Claw", Material.FLINT, 500);
         add("ENCHANTED_ANCIENT_CLAW", "Enchanted Ancient Claw", Material.FLINT, 80_000);
         add("ENCHANTED_GOLD", "Enchanted Gold Ingot", Material.GOLD_INGOT, 1_200);
@@ -36,7 +43,25 @@ public final class SellPrices {
     }
 
     private static void add(String id, String display, Material mat, long price) {
-        BY_ID.put(id, new Entry(id, display, mat, price));
+        BY_ID.put(id, new Entry(id, display, mat, null, price));
+    }
+
+    private static void add(String id, String display, ItemStack item, long price) {
+        BY_ID.put(id, new Entry(id, display, item.getType(), item, price));
+    }
+
+    private static ItemStack skull(String textureHash) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+        String texture = java.util.Base64.getEncoder().encodeToString(
+                ("{\"textures\":{\"SKIN\":{\"url\":\"http://textures.minecraft.net/texture/" + textureHash + "\"}}}")
+                        .getBytes(StandardCharsets.UTF_8));
+        item.editMeta(meta -> {
+            SkullMeta skull = (SkullMeta) meta;
+            var profile = Bukkit.createProfile(UUID.randomUUID());
+            profile.setProperty(new com.destroystokyo.paper.profile.ProfileProperty("textures", texture));
+            skull.setPlayerProfile(profile);
+        });
+        return item;
     }
 
     public static Entry byId(String id) {

@@ -83,7 +83,7 @@ public final class RitualPlugin extends JavaPlugin implements Listener {
         bindStat("setdamage", SetStatCommand.Kind.DAMAGE);
 
         MiscCommands misc = new MiscCommands(this);
-        for (String c : new String[]{"p", "party", "pc", "trades", "togglebreak",
+        for (String c : new String[]{"p", "party", "pc", "ac", "trades", "togglebreak",
                 "togglefakelag", "togglechance", "compactor", "purse", "items", "anvil"}) {
             bind(c, misc, misc);
         }

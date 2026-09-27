@@ -29,6 +29,17 @@ public final class MiscCommands implements CommandExecutor, TabCompleter {
             plugin.parties().chat(player, String.join(" ", args));
             return true;
         }
+        if (name.equals("ac")) {
+            if (!(sender instanceof Player player)) return true;
+            if (args.length == 0) {
+                player.sendMessage("§cUsage: /ac <message>");
+                return true;
+            }
+            // Re-enter the normal chat pipeline so this is a public message and
+            // is seen by listeners exactly like text typed into chat.
+            player.chat(String.join(" ", args));
+            return true;
+        }
         if (name.equals("p") || name.equals("party")) {
             if (!(sender instanceof Player player)) return true;
             return party(player, args);

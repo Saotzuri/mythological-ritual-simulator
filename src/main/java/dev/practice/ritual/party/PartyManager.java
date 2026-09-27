@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -123,6 +124,10 @@ public final class PartyManager implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     public void onChat(AsyncChatEvent event) {
+        // Match the requested Hypixel-style player prefix for every public message.
+        event.renderer((source, displayName, message, viewer) ->
+                LegacyComponentSerializer.legacySection().deserialize("§7" + source.getName() + "§7: ")
+                        .append(message));
         String raw = PlainTextComponentSerializer.plainText().serialize(event.message());
         if (raw == null) return;
         String body = stripPc(raw);
